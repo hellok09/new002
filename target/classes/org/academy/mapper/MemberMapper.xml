@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "..//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.MemberMapper">
+	
+	<!-- 회원가입 -->
+	<insert id="memberJoin">
+		insert into STUDENT(STU_ID,BRANCHCODE,PWD,NAME,ADDRESS,GENDER,PHONE,EMAIL,STATUS,AGREE_AD,ENTER,UPDATEDATE,BIRTH) 
+  		values(#{STU_ID},#{BRANCHCODE},#{PWD},#{NAME},#{ADDRESS},#{GENDER},#{PHONE},#{EMAIL},1,#{AGREE_AD},SYSDATE, SYSDATE, #{BIRTH} )
+	</insert>
+
+	<!-- 아이디 중복검사 -->
+  	<select id="idCheck" resultType="int">
+  		select count(*) from book_member where memberId = #{memberId}
+  	</select>
+  	
+  	 <!-- 로그인 -->
+	<select id="memberLogin" resultType="org.academy.domain.MemberVO">
+		select admin_id, Name from admin where
+		admin_id = #{admin_id} and PWD = #{PWD}
+	</select>
+
+	<!-- 회원정보수정 -->
+	<insert id="memberUpdate">
+		update STUDENT
+		set PWD = #{PWD}, ADDRESS = #{ADDRESS}, PHONE = #{PHONE} , NAME = #{NAME}, EMAIL = #{EMAIL}
+		where STU_ID = #{STU_ID}
+	</insert>
+</mapper>

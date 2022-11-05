@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.NoticeMapper">
+	<select id="getList" resultType="org.academy.domain.NoticeVO">
+	<![CDATA[
+	select * from notice where notice_code > 0
+	]]>
+	</select>
+	
+	<insert id="insert">
+		insert into notice (notice_code, admin_id, title, content)
+		values(seq_notice.nextval, #{admin_id}, #{title}, #{content})
+	</insert>
+	
+	
+	<insert id="insertSelectKey">
+		
+		<selectKey keyProperty="notice_code" order="BEFORE"
+			resultType="String">
+			select seq_notice.nextval from dual	
+		</selectKey> 
+		
+			insert into notice (notice_code, admin_id, title, content)
+			values (#{notice_code}, #{admin_id}, #{title}, #{content})
+	</insert>
+	
+	<select id="read" resultType="org.academy.domain.NoticeVO">
+		select * from notice where notice_code = #{notice_code}
+	</select>
+	
+	<delete id="delete" >
+	delete from notice where notice_code = #{notice_code}
+	</delete>
+	
+	<update id="update">
+		update notice
+		set title = #{title},
+		content = #{content},
+		admin_id = #{admin_id},
+		updateDate = sysdate
+		where notice_code = #{notice_code}
+	</update>
+	
+	<!-- pageing -->
+	
+	<select id="getListWithPaging" resultType="org.academy.domain.NoticeVO">
+   	<![CDATA[
+         select R.notice_code, R.admin_id, R.title, R.content , R.enter, R.updatedate
+         from 
+         (
+               select rownum as rn, O.*
+                from
+                (
+                   select N.*
+                   from notice N
+                   order by to_number(notice_code) desc
+                ) O
+                where rownum <= #{pageNum} * #{amount}
+          ) R
+         where R.rn > (#{pageNum}-1) * #{amount}
+  	 ]]>
+	</select>
+
+
+		<select id="getTotalCount" resultType="int">
+		   select count(*) from notice where notice_code > '0'
+		</select>
+   	
+   	
+</mapper>

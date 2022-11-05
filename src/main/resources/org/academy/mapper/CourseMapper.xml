@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org.//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.CourseMapper">
+
+<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item="type" collection = "typeArr">
+				<trim prefix="OR">
+					<choose>
+					<when test="type =='T'.toString() ">
+						 branch_name like '%'||#{keyword}||'%'
+					</when>
+					<when test="type =='C'.toString()">
+						course_name like '%'||#{keyword}||'%'
+					</when>
+					<when test="type =='W'.toString()">
+						class_name like '%'||#{keyword}||'%'
+					</when>
+					<when test="type =='R'.toString()">
+						teacher_name like '%'||#{keyword}||'%'
+					</when>
+					</choose>
+				</trim>				
+			</foreach>
+		</trim>
+	</sql>
+
+	
+
+
+<select id ="getPaging" resultType="org.academy.domain.CourseVO">
+	
+		<![CDATA[
+		   select branch_name, course_name, course_code, class_code, class_name, status,teacher_name, start_date, end_date
+    		from (select /*+INDEX_DESC (CLASS PK_CLASS )*/ 
+					rownum rn, branch_name, course_name, course_code, class_code, class_name, status,teacher_name, start_date, end_date
+				from
+			(select 
+                    co.branch_name, co.course_name, cl.course_code, cl.class_code,cl.class_name, cl.status,cl.teacher_name, start_date, end_date
+				from
+					class cl
+					INNER JOIN course co
+					ON cl.course_code = co.course_code
+				where 
+                
+                ]]>
+                
+                <include refid="criteria"></include>
+		<![CDATA[		
+				cl.status ='Y'
+                order by to_number(cl.class_code) desc)
+		 
+					WHERE 
+					rownum <= #{pageNum} * #{amount}
+					
+					)
+		where rn > (#{pageNum} -1) * #{amount} 
+		
+	]]>
+</select>
+
+<select id="getTotal" resultType="int">
+	select count(*) from class 
+	where 
+	
+	class_code > 0
+</select>
+
+<insert id="insertCourse">
+	<selectKey keyProperty = "class_code" order="BEFORE" resultType="String">
+		select seq_class.nextval from dual
+	</selectKey>
+	
+	insert into class(class_code, branchcode, course_code, status, class_name, teacher_name, tuition, start_date, end_date, start_time, end_time, class_target, enter, updatedate)
+	values(#{class_code}, #{branchcode}, #{course_code}, 'Y', #{class_name}, #{teacher_name}, #{tuition},#{start_date},#{end_date}, #{start_time}, #{end_time}, #{class_target}, sysdate, sysdate)
+
+</insert>
+<update id="delete">
+	update class
+	set status = 'N'
+	where class_code = #{class_code}
+
+</update>
+
+<select id ="read" resultType="org.academy.domain.CourseVO">
+	select branch_name, course_name, class_code, branchcode, course_code, status, class_name, teacher_name, tuition, start_date, end_date, start_time, end_time, class_target, enter, updatedate  
+		from (
+        select co.branch_name, co.course_name, cl.class_code, cl.branchcode, cl.course_code,cl.status, cl.class_name, cl.teacher_name, cl.tuition, start_date, end_date, start_time, end_time, cl.class_target, cl.enter,cl.updatedate 
+		from class cl
+		inner join course co
+		on cl.course_code = co.course_code
+		)
+		where class_code = #{class_code}
+	
+</select>
+
+<update id="modifyCourse">
+	update class
+	set branchcode = #{branchcode}, course_code = #{course_code}, status = #{status}, class_name = #{class_name}, 
+		teacher_name = #{teacher_name}, tuition = #{tuition}, start_date = #{start_date}, end_date = #{end_date}, 
+		start_time = #{start_time}, end_time = #{end_time}, class_target = #{class_target}, updatedate = sysdate
+	where class_code = #{class_code}
+</update>
+
+<select id="findclasscode" resultType="org.academy.domain.CourseVO">
+
+ select class_code
+ from class
+ where class_code = #{class_code}
+
+</select>
+
+</mapper>

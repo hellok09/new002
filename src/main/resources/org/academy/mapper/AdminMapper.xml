@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.AdminMapper">
+	<select id="getList" resultType="org.academy.domain.StudentVO">
+	<![CDATA[
+ SELECT 
+           b.BRANCH_NAME ,  s.ADMIN_CODE ,s.STU_ID , s.NAME ,s.STATUS, s.ENTER, s.UPDATEDATE
+        from 
+           STUDENT s , LEV l ,BRANCH b
+         where 
+            s.ADMIN_CODE =l.ADMIN_CODE 
+            and s.BRANCHCODE = b.BRANCHCODE
+
+
+
+	]]>
+	</select>
+	<select id="getadminList" resultType="org.academy.domain.AdminVO">
+	<![CDATA[
+	SELECT
+	   b.BRANCH_NAME ,  a.ADMIN_CODE ,a.ADMIN_ID , a.NAME ,a.STATUS, a.ENTER, a.UPDATEDATE
+        from 
+           ADMIN a , LEV l ,BRANCH b
+         where 
+            a.ADMIN_CODE =l.ADMIN_CODE 
+            and a.BRANCHCODE = b.BRANCHCODE
+
+	]]>
+	</select>
+	
+
+	
+	<select id="getStudentView" resultType="org.academy.domain.Student_detailVO">
+		      SELECT  *
+            FROM STUDENT 
+            WHERE STU_ID =#{STU_ID}
+           
+	</select>
+	<select id="getAdminView" resultType="org.academy.domain.Admin_detailVO">
+		      SELECT  *
+            FROM ADMIN 
+            WHERE ADMIN_ID =#{ADMIN_ID}
+	</select>
+	
+	 
+ 
+
+<delete id="getStudentDelete" parameterType="org.academy.domain.Student_detailVO" >
+    <![CDATA[
+        DELETE 
+		FROM STUDENT
+
+		WHERE STU_ID=#{STU_ID}        
+    ]]>    
+	</delete>   
+	<delete id="getAdminDelete" parameterType="org.academy.domain.Admin_detailVO" >
+    <![CDATA[
+        DELETE 
+		FROM ADMIN
+
+		WHERE ADMIN_ID=#{ADMIN_ID}        
+    ]]>    
+	</delete>   
+	
+	
+   	
+   	
+</mapper>

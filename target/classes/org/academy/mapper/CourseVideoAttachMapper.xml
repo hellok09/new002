@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.CourseVideoAttachMapper">
+
+
+	<insert id="insert">
+		insert into video_attach(uuid, filename, uploadpath, filetype, enter, updatedate, vno)
+		values(#{uuid}, #{fileName}, #{uploadPath}, #{fileType}, sysdate, sysdate, #{vno} )
+	</insert>
+	
+	<select id = "findByCode" resultType="org.academy.domain.CourseVideoAttachVO">
+	
+		select * from video_attach where vno = #{vno}
+	</select>
+	
+	<delete id= "delete">
+	 delete from video_attach where uuid = #{uuid}
+	</delete>
+	
+	<select id = "getOldFiles" resultType="org.academy.domain.CourseVideoAttachVO">
+	 
+	 	select * from video_attach where vno = #{vno} 
+	
+	</select>
+	
+	<delete id="deleteAll">
+		delete from video_attach where vno = #{vno}
+	</delete>
+	 
+</mapper>

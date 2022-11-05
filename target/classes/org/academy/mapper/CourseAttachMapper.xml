@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.CourseAttachMapper">
+
+
+	<insert id="insert">
+		insert into class_attach(uuid, class_code, filename, uploadpath, filetype, enter, updatedate)
+		values(#{uuid}, #{class_code}, #{fileName}, #{uploadPath}, #{fileType}, sysdate, sysdate )
+	</insert>
+	
+	<select id = "findByCode" resultType="org.academy.domain.CourseAttachVO">
+	
+		select * from class_attach where class_code = #{class_code}
+	</select>
+	
+	<delete id= "delete">
+	 delete from class_attach where uuid = #{uuid}
+	</delete>
+	
+	<select id = "getOldFiles" resultType="org.academy.domain.CourseAttachVO">
+	 
+	 	select * from class_attach where class_code = #{class_code} 
+	
+	</select>
+	
+	<delete id="deleteAll">
+		delete from class_attach where class_code = #{class_code}
+	</delete>
+	 
+</mapper>

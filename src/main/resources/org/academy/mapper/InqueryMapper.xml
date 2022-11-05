@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.InqueryMapper">
+	<select id="getList" resultType="org.academy.domain.InqueryVO">
+	<![CDATA[
+	select * from online_inquery where oi_code > 0
+	]]>
+	</select>
+	
+	<select id="read" resultType="org.academy.domain.InqueryVO">
+		select OI.*, C.course_name from online_inquery OI, course C where OI.course_code = C.course_code and oi_code = #{oi_code}
+	</select>
+	
+	
+		<!-- pageing -->
+	
+	<select id="getListWithPaging" resultType="org.academy.domain.InqueryVO">
+   	<![CDATA[
+         select R.oi_code, R.stu_id, R.title, R.content, R.course_code, R.enter, R.course_name 
+         from 
+         (
+               select rownum as rn, O.*
+                from
+                (
+                   select OI.*, C.course_name
+                   from online_inquery OI, course C where OI.course_code = C.course_code
+                   order by to_number(oi_code) desc
+                ) O
+                where rownum <= #{pageNum} * #{amount}
+          ) R
+         where R.rn > (#{pageNum}-1) * #{amount}
+  	 ]]>
+	</select>
+
+
+		<select id="getTotalCount" resultType="int">
+		   select count(*) from online_inquery where oi_code > '0'
+		</select>
+</mapper>

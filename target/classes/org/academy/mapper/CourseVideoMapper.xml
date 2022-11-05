@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.academy.mapper.CourseVideoMapper">
+
+
+
+	<insert id="videoInsert">
+	
+	<selectKey keyProperty = "vno" order="BEFORE" resultType="String">
+		select seq_video.nextval from dual
+	</selectKey>
+		insert into video(vno, class_code, classnum, movietitle, enter, updatedate)
+		values(#{vno}, #{class_code}, #{classnum},#{movietitle}, sysdate, sysdate)
+	</insert>
+	
+	<select id = "videoGetList" resultType="org.academy.domain.CourseVideoVO">
+	
+		select class_code, class_name, movietitle, vno,classnum
+			from (select cl.class_code, cl.class_name, vi.movietitle, vi.vno,vi.classnum
+			from video vi
+            inner join class cl
+            on vi.class_code = cl.class_code)
+            where class_code = #{class_code}
+		
+        
+        
+		order by to_number(classnum) asc
+	</select>
+	
+	<update id="videoModify">
+	update video
+	set movietitle = #{movietitle}, updatedate = sysdate, classnum = #{classnum}
+	where vno = #{vno}
+	
+	</update>
+	
+	<select id ="read" resultType="org.academy.domain.CourseVideoVO">
+	  select * from video where vno = #{vno}
+	</select>
+	
+	<select id="code" resultType="org.academy.domain.CourseVideoVO">
+	
+		select class_code from video where class_code = #{class_code}
+	</select>
+	
+	
+	
+	<delete id="deleteVideo">
+		delete from video where vno = #{vno}
+	</delete>
+	
+	
+	 
+</mapper>
